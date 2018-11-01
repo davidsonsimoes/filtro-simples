@@ -15,6 +15,12 @@ class Filter {
         this.entities;
         this.filters = [ 'isActive', 'cardinality' ];
         this.filterMethods = {
+            isActive: ( item ) => (Boolean(item[3] === true)),
+            cardinality: ( item ) => {
+                if( this.filterMethods.addressAndName(item) || this.filterMethods.phoneCondition(item)) {
+                    return true
+                }
+            },
             nameCondition: ( item, nome ) => (item[0] === nome && this.filterMethods.lastAdress(nome)),
             lastAdress: ( nome ) => {
                 if(this.entities !== nome) {
@@ -28,12 +34,6 @@ class Filter {
                 }
             },
             phoneCondition: ( item ) => ( item[1] === 'telefone'),
-            cardinality: ( item ) => {
-                if( this.filterMethods.addressAndName(item) || this.filterMethods.phoneCondition(item)) {
-                    return true
-                }
-            },
-            isActive: ( item ) => (Boolean(item[3] === true)),
         };
         this.resultFilter = ( item ) =>
             this.filters.reduce( ( acc, fn ) => {
