@@ -1,35 +1,3 @@
-// var arr = [
-//     { id: 15 },
-//     { id: -1 },
-//     { id: 0 },
-//     { id: 3 },
-//     { id: 12.2 },
-//     { },
-//     { id: null },
-//     { id: NaN },
-//     { id: 'undefined' }
-//   ];
-  
-//   var invalidEntries = 0;
-  
-//   function filterByID(obj) {
-//     if ('id' in obj && typeof(obj.id) === 'number' && !isNaN(obj.id)) {
-//       return true;
-//     } else {
-//       invalidEntries++;
-//       return false;
-//     }
-//   }
-  
-//   var arrByID = arr.filter(filterByID);
-  
-//   console.log('Filtered Array\n', arrByID); 
-//   // [{ id: 15 }, { id: -1 }, { id: 0 }, { id: 3 }, { id: 12.2 }]
-  
-//   console.log('Number of Invalid Entries = ', invalidEntries); 
-//   // 4
-
-
 let facts = [
     ['gabriel', 'endereço', 'av rio branco, 109', true],
     ['joão', 'endereço', 'rua alice, 10', true],
@@ -39,68 +7,43 @@ let facts = [
     ['joão', 'telefone', '234-5678', false],
     ['gabriel', 'telefone', '98888-1111', true],
     ['gabriel', 'telefone', '56789-1010', true],
-  ];
+];
 
+class Filter {
+    constructor (facts) {
+        this.facts = facts;
+        this.entities;
+        this.filters = [ 'isActive', 'cardinality' ];
+        this.filterMethods = {
+            nameCondition: ( item, nome ) => (item[0] === nome && this.filterMethods.lastAdress(nome)),
+            lastAdress: ( nome ) => {
+                if(this.entities !== nome) {
+                    this.entities = nome;
+                    return true
+                }
+            },
+            addressAndName: ( item ) => {
+                if (item[1] === 'endereço' && (this.filterMethods.nameCondition(item, 'joão') || this.filterMethods.nameCondition(item, 'gabriel'))) {
+                    return true
+                }
+            },
+            phoneCondition: ( item ) => ( item[1] === 'telefone'),
+            cardinality: ( item ) => {
+                if( this.filterMethods.addressAndName(item) || this.filterMethods.phoneCondition(item)) {
+                    return true
+                }
+            },
+            isActive: ( item ) => (Boolean(item[3] === true)),
+        };
+        this.resultFilter = ( item ) =>
+            this.filters.reduce( ( acc, fn ) => {
+                return acc && this.filterMethods[ fn ]( item )
+            }, true );
+    }
 
-// objeto com logicas de filtros disponíveis
-const filtros = {
-    // isNumber: ( item ) => !isNaN( item ),
-    // isOdd: ( item ) => !( item % 2 ),
-    // isZero: ( item ) => !( item ),
-    condicaoTelefone: ( item ) => ( item[1] === 'telefone'),
-    condicaoEndereco: ( item ) => {
-        if( item[1] === 'endereço') {
-            let ultimo = item[item.length - 1];
-            console.log(ultimo);
-            return true
-        }
-    },
-    validacaoAtivos: ( item ) => (Boolean(item[3] === true)),
+    init () {
+        return this.facts.filter(this.resultFilter)
+    }
 }
-
-// array de filtros habilitados
-const aplicarFiltros = [ 'validacaoAtivos', 'condicaoEndereco' ]
-
-const getValidFactsToEntity = ( item ) =>
-    aplicarFiltros.reduce( ( acc, fn ) => {
-        return acc && filtros[ fn ]( item )
-    }, true );
-
-var resultado = facts.filter(getValidFactsToEntity);
-
-// const getFacts = (facts) => {
-// for (var i = 0; i < facts.length; i++) {
-//     return getValidFactsToEntity(facts[i]) ? facts[i] : false;
-// }
-// }
-  
-console.log( resultado );
-// console.log(getFacts(facts));
-
-// var invalidEntries = 0;
-
-// function getValidFactsToEntity (facts) {
-//     if (facts[4]) {
-//         return true;
-//       } else {
-//         invalidEntries++;
-//         return false;
-//       }
-// };
-
-
-
-
-
-// var doubles = facts.map(function(facts) {
-//     return facts;
-// });
-
-// var resultFacts = facts.filter(getValidFactsToEntity);
-  
-// console.log('Filtered Array\n', resultFacts); 
-// // [{ id: 15 }, { id: -1 }, { id: 0 }, { id: 3 }, { id: 12.2 }]
-
-// console.log('Number of Invalid Entries = ', invalidEntries); 
-
-// // console.log(getValidFactsToEntity(facts));
+let filter = new Filter(facts);
+console.log(filter.init());
