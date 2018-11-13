@@ -1,3 +1,5 @@
+[![DeepScan grade](https://deepscan.io/api/teams/1369/projects/3547/branches/31506/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=1369&pid=3547&bid=31506)
+
 # Modelo de filtro simples em Array
 
 [![N|Solid](http://davidsonsimoes.com.br/images/logo2.png)](http://davidsonsimoes.com.br/)
